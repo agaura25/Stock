@@ -10,12 +10,32 @@ import streamlit as st
 import os
 from dotenv import load_dotenv
 load_dotenv()
-
+st.set_page_config(page_title="Advanced Stock Analysis Dashboard", layout="wide")
 # get api key from .env file
-GROQ_API_KEY=os.getenv('GROQ_API_KEY')
+#GROQ_API_KEY=apikeys
+apikeys = st.sidebar.text_input("Enter your API Key", type="password")
+model_options = [
+    "deepseek-r1-distill-llama-70b",
+    "gemma2-9b-it",
+    "llama-3.1-8b-instant",
+    "llama-3.2-11b-vision-preview",
+    "llama-3.2-1b-preview",
+    "llama-3.2-3b-preview",
+    "llama-3.2-90b-vision-preview",
+    "llama-3.3-70b-specdec",
+    "llama-3.3-70b-versatile",
+    "llama-guard-3-8b",
+    "llama3-70b-8192",
+    "llama3-8b-8192",
+    "mixtral-8x7b-32768"
+]
+
+# Streamlit selectbox for model selection
+selected_model = st.sidebar.selectbox("Select a Model", model_options)
+selected_model1="groq/"+selected_model
 llm = LLM(
-           model="groq/gemma2-9b-it",
-           api_key=GROQ_API_KEY,
+           model=selected_model1,
+           api_key=apikeys,
             max_tokens=8000
         )
 
@@ -416,12 +436,13 @@ crew = Crew(
     manager_llm=llm
 )
 
-st.set_page_config(page_title="Advanced Stock Analysis Dashboard", layout="wide")
+
 
 st.title("Advanced Stock Analysis Dashboard")
 
 st.sidebar.header("Stock Analysis Query")
 query = st.sidebar.text_area("Enter your stock analysis question", value="Is Apple a safe long-term bet for a risk-averse individual?", height=100)
+#apikeys= st.sidebar.text_input("Enter your API Key")
 analyze_button = st.sidebar.button("Analyze")
 
 if analyze_button:
